@@ -404,6 +404,10 @@ section {
   margin-bottom: 1.2rem;
 }
 
+.project-card::after {
+  pointer-events: none;
+}
+
 .project-tags {
   display: flex; flex-wrap: wrap; gap: 0.4rem;
   margin-bottom: 1.2rem;
@@ -436,6 +440,29 @@ section {
   display: block;
   margin-bottom: 0.1rem;
 }
+
+.btn-download {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  margin-top: 1.2rem;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: rgba(0,229,255,0.07);
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 6px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+.btn-download:hover {
+  background: rgba(0,229,255,0.15);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,229,255,0.15);
+}
+.dl-icon { font-size: 0.9rem; }
 
 /* ===========================
    SKILLS
