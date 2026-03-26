@@ -5,15 +5,199 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Louis Bourcier — Réseau & Télécommunications</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #0f0f1a;
+  --bg3: #141420;
+  --surface: #16161f;
+  --surface2: #1e1e2e;
+  --border: rgba(255,255,255,0.07);
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --orange: #ff6b35;
+  --text: #e8e8f0;
+  --text-muted: #6b6b8a;
+  --text-dim: #3a3a55;
+  --font-display: 'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+em { font-style: normal; color: var(--accent); }
+strong { color: #fff; }
+.accent { color: var(--accent); }
+.orange { color: var(--orange); font-weight: 700; }
+
+/* NAV */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 3rem;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+.nav-logo { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+.nav-logo .dot { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: #4ade80; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; animation: pulse 2s ease infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+}
+
+/* HERO */
+#hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: 0 3rem;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 2; text-align: center; max-width: 860px; }
+.hero-tag { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.6s 0.2s forwards; }
+.hero-title { font-size: clamp(4rem, 10vw, 9rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 1.5rem; }
+.hero-title .line { display: block; opacity: 0; transform: translateY(40px); animation: fadeUp 0.7s forwards; }
+.hero-title .line:nth-child(1) { animation-delay: 0.3s; }
+.hero-title .line:nth-child(2) { animation-delay: 0.5s; }
+.hero-subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.6s 0.7s forwards; }
+.hero-cta { display: flex; gap: 1rem; justify-content: center; opacity: 0; animation: fadeUp 0.6s 0.9s forwards; }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.05em; text-decoration: none; border-radius: 4px; transition: all 0.25s ease; cursor: pointer; border: none; }
+.btn-primary { background: var(--accent); color: #000; font-weight: 700; }
+.btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,229,255,0.4); }
+.btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.hero-scroll { position: absolute; bottom: 2.5rem; left: 3rem; display: flex; align-items: center; gap: 1rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.1em; opacity: 0; animation: fadeUp 0.6s 1.2s forwards; }
+.scroll-line { width: 40px; height: 1px; background: var(--text-dim); position: relative; overflow: hidden; }
+.scroll-line::after { content: ''; position: absolute; inset: 0; background: var(--accent); animation: scrollSlide 2s 1.5s ease-in-out infinite; }
+@keyframes scrollSlide { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } }
+.hero-deco { position: absolute; inset: 0; pointer-events: none; }
+.deco-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(0,229,255,0.06); animation: rotate 20s linear infinite; }
+.r1 { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.r2 { width: 750px; height: 750px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 35s; animation-direction: reverse; }
+.r3 { width: 1000px; height: 1000px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 50s; }
+@keyframes rotate { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* SECTIONS */
+section { padding: 8rem 3rem; max-width: 1200px; margin: 0 auto; }
+.section-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 1rem; }
+.section-title { font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 3.5rem; }
+
+/* ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.about-text h2 { font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+.about-text p { color: var(--text-muted); margin-bottom: 1rem; line-height: 1.8; }
+.about-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+.about-tags span { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.35rem 0.9rem; border: 1px solid var(--border); border-radius: 100px; color: var(--text-muted); background: var(--surface); letter-spacing: 0.05em; }
+.about-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; }
+.about-card::before { content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+.card-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
+.timeline { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; }
+.timeline li { display: flex; gap: 1rem; align-items: flex-start; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.timeline li:last-child { border-bottom: none; padding-bottom: 0; }
+.year { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); white-space: nowrap; padding-top: 0.1rem; min-width: 90px; }
+.event { font-size: 0.9rem; color: var(--text); }
+.event small { display: block; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+
+/* PROJECTS */
+#projects { max-width: 1200px; }
+.projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; transition: all 0.3s ease; cursor: default; }
+.project-card::after { content: ''; position: absolute; inset: 0; border-radius: 12px; background: radial-gradient(circle at 50% 0%, rgba(0,229,255,0.05), transparent 60%); opacity: 0; transition: opacity 0.3s; }
+.project-card:hover { border-color: rgba(0,229,255,0.25); transform: translateY(-4px); }
+.project-card:hover::after { opacity: 1; }
+.project-card.featured { border-color: rgba(0,229,255,0.15); background: linear-gradient(135deg, var(--surface2), var(--surface)); }
+.project-year { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.8rem; }
+.project-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.project-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; color: #fff; }
+.project-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.2rem; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+.project-tags span { font-family: var(--font-mono); font-size: 0.68rem; padding: 0.25rem 0.6rem; background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.15); border-radius: 4px; color: var(--accent); }
+.project-skills { border-top: 1px solid var(--border); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.project-skills div { font-size: 0.78rem; color: var(--text-muted); }
+.project-skills strong { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.1rem; }
+
+/* SKILLS */
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.skill-category { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+.skill-category h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; color: #fff; }
+.cat-icon { font-size: 1.2rem; }
+.skill-category ul { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.skill-category li { display: flex; flex-direction: column; gap: 0.35rem; }
+.skill-category li span { font-size: 0.85rem; color: var(--text-muted); }
+.bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.bar div { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transform: scaleX(0); transform-origin: left; transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.bar.animated div { transform: scaleX(1); }
+
+/* CONTACT */
+#contact { max-width: 1200px; }
+.contact-wrapper { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: start; }
+.contact-left h2 { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.contact-left p { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
+.contact-info { display: flex; flex-direction: column; gap: 0.8rem; }
+.contact-link { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.contact-link:hover { color: var(--accent); }
+.link-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; flex-shrink: 0; }
+.cv-download-card { display: flex; align-items: center; gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-decoration: none; color: var(--text); transition: all 0.25s ease; margin-bottom: 1.5rem; }
+.cv-download-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.1); }
+.cv-icon { font-size: 2rem; }
+.cv-download-card strong { display: block; font-size: 0.95rem; color: #fff; }
+.cv-download-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+.cv-arrow { margin-left: auto; font-size: 1.2rem; color: var(--accent); }
+.contact-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.contact-tags span { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 100px; color: var(--text-dim); }
+
+/* FOOTER */
+footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  #nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  section { padding: 5rem 1.5rem; }
+  .about-grid, .projects-grid, .skills-grid, .contact-wrapper { grid-template-columns: 1fr; }
+  .hero-title { font-size: clamp(3rem, 14vw, 5rem); }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .hero-scroll { display: none; }
+}
+@media (max-width: 600px) { .deco-ring { display: none; } }
+</style>
 </head>
 <body>
 
-  <!-- NOISE OVERLAY -->
   <div class="noise"></div>
 
-  <!-- NAV -->
   <nav id="nav">
     <div class="nav-logo">LB<span class="dot">.</span></div>
     <ul class="nav-links">
@@ -25,14 +209,13 @@
     <div class="nav-status"><span class="pulse"></span>Disponible</div>
   </nav>
 
-  <!-- HERO -->
   <section id="hero">
     <div class="hero-grid-bg"></div>
     <div class="hero-content">
       <p class="hero-tag">// BUT Réseaux & Télécommunications</p>
       <h1 class="hero-title">
-        <span class="line" data-delay="0">Louis</span>
-        <span class="line accent" data-delay="100">Bourcier</span>
+        <span class="line">Louis</span>
+        <span class="line accent">Bourcier</span>
       </h1>
       <p class="hero-subtitle">Technicien réseau · Ex-apprenti <span class="orange">Orange</span> · Blois, France</p>
       <div class="hero-cta">
@@ -40,10 +223,7 @@
         <a href="cv.pdf" download class="btn btn-outline">Télécharger CV</a>
       </div>
     </div>
-    <div class="hero-scroll">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
+    <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
     <div class="hero-deco">
       <div class="deco-ring r1"></div>
       <div class="deco-ring r2"></div>
@@ -51,7 +231,6 @@
     </div>
   </section>
 
-  <!-- ABOUT -->
   <section id="about">
     <div class="section-label">// 01 — À propos</div>
     <div class="about-grid">
@@ -60,35 +239,29 @@
         <p>Diplômé d'un BUT Réseaux & Télécommunications à l'IUT de Blois, j'ai acquis une solide expérience terrain lors de mon apprentissage chez <strong>Orange</strong> en tant que technicien d'interventions.</p>
         <p>Dynamique, autonome et rigoureux, je recherche de nouveaux défis dans les domaines des infrastructures réseau, de la fibre optique et du développement d'applications communicantes.</p>
         <div class="about-tags">
-          <span>Dynamique</span>
-          <span>Autonome</span>
-          <span>Rigoureux</span>
-          <span>Motivé</span>
+          <span>Dynamique</span><span>Autonome</span><span>Rigoureux</span><span>Motivé</span>
         </div>
       </div>
       <div class="about-card">
-        <div class="card-inner">
-          <div class="card-label">Parcours</div>
-          <ul class="timeline">
-            <li>
-              <span class="year">2024–2025</span>
-              <span class="event">Installation Fibre Entreprises<br><small>Projet final — IUT de Blois</small></span>
-            </li>
-            <li>
-              <span class="year">2023–2024</span>
-              <span class="event">Apprenti chez Orange<br><small>Technicien d'interventions</small></span>
-            </li>
-            <li>
-              <span class="year">2022–2023</span>
-              <span class="event">BUT R&T — IUT de Blois<br><small>1ère année</small></span>
-            </li>
-          </ul>
-        </div>
+        <div class="card-label">Parcours</div>
+        <ul class="timeline">
+          <li>
+            <span class="year">2024–2025</span>
+            <span class="event">Installation Fibre Entreprises<small>Projet final — IUT de Blois</small></span>
+          </li>
+          <li>
+            <span class="year">2023–2024</span>
+            <span class="event">Apprenti chez Orange<small>Technicien d'interventions</small></span>
+          </li>
+          <li>
+            <span class="year">2022–2023</span>
+            <span class="event">BUT R&T — IUT de Blois<small>1ère année</small></span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- PROJECTS -->
   <section id="projects">
     <div class="section-label">// 02 — Projets</div>
     <h2 class="section-title">Ce que j'ai <em>construit</em></h2>
@@ -99,12 +272,10 @@
         <div class="project-icon">📡</div>
         <h3>Caractérisation d'un Signal Audio</h3>
         <p>Étude théorique et pratique d'un signal audio : génération de bruit blanc, représentation temporelle & fréquentielle, ajout de filtres passe-bas.</p>
-        <div class="project-tags">
-          <span>Fibula</span><span>Excel</span><span>EDT 410 000</span><span>Traitement du signal</span>
-        </div>
+        <div class="project-tags"><span>Fibula</span><span>Excel</span><span>EDT 410 000</span><span>Signal</span></div>
         <div class="project-skills">
-          <div><strong>Techniques</strong> Utilisation de Fibula · Graphiques Excel · EDT 410 000</div>
-          <div><strong>Transversales</strong> Rapport · Précision de mesures</div>
+          <div><strong>Techniques</strong>Fibula · Graphiques Excel · EDT 410 000</div>
+          <div><strong>Transversales</strong>Rapport · Précision de mesures</div>
         </div>
       </div>
 
@@ -113,12 +284,10 @@
         <div class="project-icon">🌐</div>
         <h3>Réseau Informatique d'Entreprise</h3>
         <p>Modélisation complète d'un réseau d'entreprise sous Cisco Packet Tracer : salle informatique, local technique, serveurs DHCP, FAI, DNS.</p>
-        <div class="project-tags">
-          <span>Packet Tracer</span><span>DHCP</span><span>DNS</span><span>FAI</span>
-        </div>
+        <div class="project-tags"><span>Packet Tracer</span><span>DHCP</span><span>DNS</span><span>FAI</span></div>
         <div class="project-skills">
-          <div><strong>Techniques</strong> Packet Tracer · Création de serveurs · Adressage IP</div>
-          <div><strong>Transversales</strong> Cahier des charges · Brainstorming · Rapport</div>
+          <div><strong>Techniques</strong>Packet Tracer · Serveurs · Adressage IP</div>
+          <div><strong>Transversales</strong>Cahier des charges · Brainstorming</div>
         </div>
       </div>
 
@@ -126,13 +295,11 @@
         <div class="project-year">2023–2024</div>
         <div class="project-icon">💬</div>
         <h3>Application Communicante</h3>
-        <p>Développement d'une application de messagerie en Java avec base de données, dépôt Git, interfaces graphiques et prévisualisation sur Canva.</p>
-        <div class="project-tags">
-          <span>Java</span><span>Git</span><span>BDD</span><span>MLD</span>
-        </div>
+        <p>Développement d'une application de messagerie en Java avec base de données, dépôt Git, interfaces graphiques et prévisualisation Canva.</p>
+        <div class="project-tags"><span>Java</span><span>Git</span><span>BDD</span><span>MLD</span></div>
         <div class="project-skills">
-          <div><strong>Techniques</strong> Git · Java · Base de données · MLD</div>
-          <div><strong>Transversales</strong> Canva · Gestion d'erreurs · Brainstorming</div>
+          <div><strong>Techniques</strong>Git · Java · Base de données · MLD</div>
+          <div><strong>Transversales</strong>Canva · Gestion d'erreurs</div>
         </div>
       </div>
 
@@ -140,20 +307,17 @@
         <div class="project-year">2024–2025</div>
         <div class="project-icon">🔌</div>
         <h3>Installation Fibre pour Entreprises</h3>
-        <p>Projet terrain complet : caractérisation de ligne, tirage de fibre optique, raccordement client et installation de routeurs pour des entreprises.</p>
-        <div class="project-tags">
-          <span>Fibre optique</span><span>FTTO</span><span>Routeur</span><span>Terrain</span>
-        </div>
+        <p>Projet terrain complet : caractérisation de ligne, tirage de fibre optique, raccordement client et installation de routeurs.</p>
+        <div class="project-tags"><span>Fibre optique</span><span>FTTO</span><span>Routeur</span><span>Terrain</span></div>
         <div class="project-skills">
-          <div><strong>Techniques</strong> Tirage fibre · Raccordement · Configuration routeur</div>
-          <div><strong>Transversales</strong> Relation client · Intervention terrain</div>
+          <div><strong>Techniques</strong>Tirage fibre · Raccordement · Routeur</div>
+          <div><strong>Transversales</strong>Relation client · Intervention terrain</div>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- SKILLS -->
   <section id="skills">
     <div class="section-label">// 03 — Compétences</div>
     <h2 class="section-title">Mon <em>arsenal</em> technique</h2>
@@ -179,7 +343,7 @@
       <div class="skill-category">
         <h3><span class="cat-icon">📊</span> Outils & Mesures</h3>
         <ul>
-          <li><span>Fibula (signaux)</span><div class="bar"><div style="width:80%"></div></div></li>
+          <li><span>Fibula</span><div class="bar"><div style="width:80%"></div></div></li>
           <li><span>Excel / Graphiques</span><div class="bar"><div style="width:78%"></div></div></li>
           <li><span>EDT 410 000</span><div class="bar"><div style="width:75%"></div></div></li>
           <li><span>Canva</span><div class="bar"><div style="width:70%"></div></div></li>
@@ -197,53 +361,100 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section id="contact">
     <div class="section-label">// 04 — Contact</div>
     <div class="contact-wrapper">
       <div class="contact-left">
         <h2>Travaillons<br><em>ensemble</em></h2>
-        <p>Je recherche une alternance MSc Cybersécurité</p>
+        <p>Je suis disponible pour des opportunités en CDI, alternance ou stage dans le domaine des réseaux, télécommunications ou systèmes.</p>
         <div class="contact-info">
           <a href="mailto:louis.bourcier@email.com" class="contact-link">
-            <span class="link-icon">✉</span>
-            louis.bourcier45@orange.fr
+            <span class="link-icon">✉</span>louis.bourcier@email.com
           </a>
           <a href="https://linkedin.com/in/louisbourcier" target="_blank" class="contact-link">
-            <span class="link-icon">in</span>
-            linkedin.com/in/louis-bourcier-cyber
+            <span class="link-icon">in</span>linkedin.com/in/louisbourcier
           </a>
           <div class="contact-link">
-            <span class="link-icon">📍</span>
-            Orléans, Centre-Val de Loire
+            <span class="link-icon">📍</span>Blois, Centre-Val de Loire
           </div>
         </div>
       </div>
       <div class="contact-right">
-        <a href="Curriculum-Vitae-BOURCIER-Louis.pdf" download class="cv-download-card">
+        <a href="cv.pdf" download class="cv-download-card">
           <div class="cv-icon">📄</div>
-          <div>
-            <strong>Télécharger mon CV</strong>
-            <p>Format PDF — Mis à jour 2025</p>
-          </div>
+          <div><strong>Télécharger mon CV</strong><p>Format PDF — Mis à jour 2025</p></div>
           <span class="cv-arrow">↓</span>
         </a>
         <div class="contact-tags">
-          <span>Open to work</span>
-          <span>Réseaux</span>
-          <span>Télécoms</span>
-          <span>Fibre</span>
-          <span>Blois / Remote</span>
+          <span>Open to work</span><span>Réseaux</span><span>Télécoms</span><span>Fibre</span><span>Blois / Remote</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>© 2025 Louis Bourcier — Fait avec ❤️ et beaucoup de paquets réseau</p>
   </footer>
 
-  <script src="js/script.js"></script>
+<script>
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), entry.target.dataset.delay || 0);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.project-card, .skill-category, .about-card, .about-text, .contact-left, .contact-right, .section-label, .section-title').forEach((el, i) => {
+  el.classList.add('reveal');
+  el.dataset.delay = (i % 4) * 80;
+  revealObserver.observe(el);
+});
+
+// Skill bars
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.querySelectorAll('.bar').forEach(b => b.classList.add('animated'));
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.skill-category').forEach(el => barObserver.observe(el));
+
+// Nav shrink on scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.style.padding = window.scrollY > 60 ? '0.8rem 3rem' : '1.2rem 3rem';
+});
+
+// Active nav links
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + entry.target.id ? 'var(--accent)' : '';
+      });
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('section[id]').forEach(s => navObserver.observe(s));
+
+// Cursor glow
+const glow = document.createElement('div');
+glow.style.cssText = 'position:fixed;pointer-events:none;z-index:9998;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,255,0.04) 0%,transparent 70%);transform:translate(-50%,-50%);transition:left 0.15s ease,top 0.15s ease;';
+document.body.appendChild(glow);
+document.addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+
+// Project index badges
+document.querySelectorAll('.project-card').forEach(card => {
+  const idx = card.dataset.index;
+  if (idx) {
+    const b = document.createElement('div');
+    b.style.cssText = 'position:absolute;top:1.5rem;right:1.5rem;font-family:monospace;font-size:0.68rem;color:rgba(255,255,255,0.1);';
+    b.textContent = '#' + idx;
+    card.appendChild(b);
+  }
+});
+</script>
 </body>
 </html>
