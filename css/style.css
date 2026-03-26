@@ -473,6 +473,13 @@ section {
   gap: 1.5rem;
 }
 
+.skills-grid > .skill-category:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 500px;
+  width: 100%;
+}
+
 .skill-category {
   background: var(--surface);
   border: 1px solid var(--border);
